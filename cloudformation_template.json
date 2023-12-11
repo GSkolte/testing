@@ -4,7 +4,8 @@
     "Parameters": {
         "S3BucketName": {
             "Type": "String",
-            "Description": "NameoftheAWSS3buckettoruntestcases"
+            "Description": "NameoftheAWSS3buckettoruntestcases",
+            "Name":"TestS3Bucket"
         }
     },
     "Resources": {
