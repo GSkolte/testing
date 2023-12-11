@@ -1,91 +1,49 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "AWS CloudFormation template to create the Fylamynt IAM Role.",
-    "Metadata": {
-        "AWS::CloudFormation::Interface": {
-            "ParameterGroups": [
-                {
-                    "Label": {
-                        "default": "Fylamynt Policy Configuration"
-                    },
-                    "Parameters": [
-                        "FylamyntAccountID",
-                        "FylamyntExternalId",
-                        "PolicySelection"
-                    ]
-                }
-            ],
-            "ParameterLabels": {
-                "FylamyntAccountID": {
-                    "default": "Fylamynt Account ID"
-                },
-                "FylamyntExternalId": {
-                    "default": "Fylamynt External ID"
-                },
-                "PolicySelection": {
-                    "default": "AWS Policy ARN"
-                }
-            }
-        }
-    },
+    "Description": "CloudFormationtemplatefors3bucket",
     "Parameters": {
-        "FylamyntAccountID": {
+        "S3BucketName": {
             "Type": "String",
-            "Description": "Enter the Account ID"
-        },
-        "FylamyntExternalId": {
-            "Type": "String",
-            "Description": "Enter the External ID from the Fylamynt console."
-        },
-        "PolicySelection": {
-            "Type": "String",
-            "Default": "arn:aws:iam::aws:policy/PowerUserAccess",
-            "Description": "If you already have a policy, copy/paste the ARN. Otherwise, the Fylamynt team can help you create a policy that suits your needs. For non-critical test accounts, the PowerUserAccess managed policy is set by default. This will unlock the full functionality of the Fylamynt platform."
+            "Description": "NameoftheAWSS3buckettoruntestcases"
         }
     },
     "Resources": {
-        "FylamyntRole": {
-            "Type": "AWS::IAM::Role",
+        "S3Bucket": {
+            "DeletionPolicy": "Retain",
+            "Type": "AWS::S3::Bucket",
+            "Description": "S3bucketcreation",
             "Properties": {
-                "AssumeRolePolicyDocument": {
-                    "Version": "2012-10-17",
-                    "Statement": [
+                "BucketName": {
+                    "Ref": "S3BucketName"
+                },
+                "AccessControl": "Private",
+                "PublicAccessBlockConfiguration": {
+                    "BlockPublicAcls": true,
+                    "BlockPublicPolicy": true,
+                    "IgnorePublicAcls": true,
+                    "RestrictPublicBuckets": true
+                },
+                "BucketEncryption": {
+                    "ServerSideEncryptionConfiguration": [
                         {
-                            "Effect": "Allow",
-                            "Principal": {
-                                "AWS": {
-                                    "Ref": "PolicySelection"
-                                }
-                            },
-                            "Action": "sts:AssumeRole",
-                            "Condition": {
-                                "StringEquals": {
-                                    "sts:ExternalId": {
-                                        "Ref": "FylamyntExternalId"
-                                    }
-                                }
+                            "ServerSideEncryptionByDefault": {
+                                "SSEAlgorithm": "AES256"
                             }
                         }
                     ]
+                },
+                "VersioningConfiguration": {
+                    "Status": "Enabled"
                 }
             }
         }
     },
     "Outputs": {
-        "AssumeRoleArn": {
+        "S3Bucket": {
+            "Description": "BucketCreatedusingthistemplate.",
             "Value": {
-                "Fn::GetAtt": [
-                    "FylamyntRole",
-                    "Arn"
-                ]
-            },
-            "Description": "The ARN of the Fylamynt IAM Role"
-        },
-        "ExternalId": {
-            "Value": {
-                "Ref": "FylamyntExternalId"
-            },
-            "Description": "The Fylamynt STS External ID"
+                "Ref": "S3Bucket"
+            }
         }
     }
 }
